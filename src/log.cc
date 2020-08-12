@@ -12,6 +12,5 @@ spdlog::logger ytdl::init_logger(const std::string& log_path)
     file_sink->set_level(spdlog::level::trace);
     auto logger = spdlog::logger("ytdl", { console_sink, file_sink });
     logger.set_level(spdlog::level::debug);
-    logger.info("test");
     return std::move(logger);
 }

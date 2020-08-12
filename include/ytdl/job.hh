@@ -17,7 +17,7 @@ struct job : public basic_job, public std::enable_shared_from_this<job<Fn, Args.
     std::function<void()> _functor;
     std::optional<typename std::function<Fn>::result_type> _result;
 
-    job(std::function<Fn>& fn, Args... args)
+    job(const std::function<Fn>& fn, Args... args)
         : _functor { [this, fn, args...] { _result = fn(args...); } }
     {
     }
@@ -28,9 +28,9 @@ struct job : public basic_job, public std::enable_shared_from_this<job<Fn, Args.
 };
 
 template <typename Fn, typename... Args>
-struct pure_job : public basic_job { // A pure_job is some jobs without any return value
+struct pure_job : public basic_job { // A pure_job is job without any return value
     std::function<void()> _functor;
-    pure_job(std::function<Fn>& fn, Args... args)
+    pure_job(const std::function<Fn>& fn, Args... args)
         : _functor { [this, fn, args...] { fn(args...); } }
     {
     }
@@ -38,7 +38,7 @@ struct pure_job : public basic_job { // A pure_job is some jobs without any retu
 };
 
 template <typename Fn, typename... Args>
-auto to_job(std::function<Fn> fn, Args... args)
+auto to_job(const std::function<Fn>& fn, Args... args)
 {
     if constexpr (std::is_same_v<typename std::function<Fn>::result_type, void>)
         return pure_job(fn, args...);
@@ -47,7 +47,7 @@ auto to_job(std::function<Fn> fn, Args... args)
 }
 
 template <typename Fn, typename... Args>
-auto to_pure_job(std::function<Fn> fn, Args... args) { return pure_job(fn, args...); }
+auto to_pure_job(const std::function<Fn>& fn, Args... args) { return pure_job(fn, args...); }
 
 }
 #endif
