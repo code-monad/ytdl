@@ -3,7 +3,8 @@
 
 #include <functional>
 #include <optional>
-#include <tuple>
+#include <type_traits>
+
 namespace ytdl {
     
     struct basic_job { // abstract job
@@ -12,7 +13,7 @@ namespace ytdl {
     };
 
     template<typename Fn, typename... Args>
-    struct job : public basic_job { // a job that could be execute  lately
+    struct job : public basic_job, public std::enable_shared_from_this<job<Fn, Args...>> { // a job that could be execute  lately
         std::function<void()> _functor;
         std::optional<typename std::function<Fn>::result_type> _result;
         
