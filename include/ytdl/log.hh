@@ -6,6 +6,6 @@
 #include <memory>
 
 namespace ytdl {
-    spdlog::logger init_logger(const std::string& log_path = "log");
+spdlog::logger init_logger(const std::string& log_path = "log");
 }
 #endif
