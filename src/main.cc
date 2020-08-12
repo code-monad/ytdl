@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ytdl/log.hh>
+#include <ytdl/job.hh>
 #include <thread>
 #include <chrono>
 #include <random>
@@ -12,14 +13,15 @@ int main() {
     std::random_device rd;
     std::uniform_int_distribution<int> dist(0, 9);
     std::vector<std::thread> v;
-	
-    for(int i = 0; i < 8; i++){
-        v.push_back(std::move(std::thread([&, i]{std::this_thread::sleep_for(std::chrono::seconds(dist(rd)));logger.info(i);})));
-    }
 
-    for (auto& x: v){
-        x.join();
-    }
-	
+    std::function<void()> fn = [&logger]{ logger.info("fn here.");};
+
+    std::function<void(int)> fn2 = [&logger](int a) { logger.info("fn2 here");};
+    
+    auto job = ytdl::to_job(fn);
+    auto job2 = ytdl::to_job(fn2, 2);
+
+    job.execute();
+    job2.execute();
     return 0;
 }
